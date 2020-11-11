@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css"/>
+    <link rel="stylesheet" type='text/css' href="/static/css/bodymain.css">
+    <link rel="stylesheet" type='text/css' href="/static/css/addArticle.css">
+    <script src="/static/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/static/js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+    <title>百知课程后台管理系统-增加课程/分类</title>
+    <style type="text/css">
+    	.option_tr {
+    		/*display: none;  */
+    		/*通过查看 复选框 课程类别复选框 是否选中，如果选中，直接把当前标签显示即可*/
+    	}
+    </style>
+     <script>
+        function radio(t) {
+            {#console.log(typeof(t.value));#}
+            if (t.value==='1'){
+                $("#select1").attr('disabled',true)
+            }else {
+                 $("#select1").removeAttr('disabled')
+            }
+        }
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-default nav-self">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">百知课程后台管理系统</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="../user/login.html" role="button">登录 <span class="glyphicon glyphicon-log-in"></span></a>
+                </li>
+                <li>
+                    <a href="../user/logout.html">退出 <span class="glyphicon glyphicon-log-out"></span></a>
+                </li>
+            </ul>
+            <form class="navbar-form navbar-right">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="">
+                </div>
+                <div class="btn-group" role="group" aria-label="...">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Nav tabs -->
+        <div class="panel-group col-sm-2 left-side-bar" id="accordion" role="tablist" aria-multiselectable="true">
+            <div>
+                <div class="panel panel-default">
+                   <div class="panel-heading left-side-header"><a href="{% url 'course:index' %}">百知课程</a></div>
+                  {% for cate in cates %} {# 一级分类 #}
+                        <div class="course-python" style="height: 30px; line-height: 30px;background-color: #adadad"><a href="{% url 'course:base' %}?level={{ cate.level }}&id={{ cate.id }}">{{ cate.title }}</a></div>
+                        {% for sub_cate in sub_cates %}   {# 二级分类 #}
+                            {% if sub_cate.parent_id == cate.id %}
+                                <a href="{% url 'course:base' %}?level={{ sub_cate.level }}&id={{ sub_cate.id }}" class="list-group-item" >{{ sub_cate.title }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- Tab panes 详情展示面板 -->
+        <div class="tab-content col-sm-10 right-side">
+
+            <div class="panel panel-default right-side-content">
+                <div class="page-header">
+                  <h3>增加课程/分类</h3>
+                </div>
+                 <form action="{% url 'course:add_course_logic' %}" method="post" id="submit">
+                {% csrf_token %}
+                <table class="table table-bordered">
+                    <tr>
+                        <td align="center" valign="middle">名称：</td>
+                        <td><input type="text" class="my-inp" name="title"/></td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="middle">选择类型</td>
+                        <td>
+                             <input type="radio" value="1" name="level" onchange="radio(this)">课程名称
+                            <input type="radio" value="2" name="level" onchange="radio(this)">课程类别名称
+                        </td>
+                    </tr>
+                    <tr class='option_tr'>
+                        <td align="center">课程名称：</td>
+                        <td>
+                            <select name="cate_sel" class="my-sel" id="select1" disabled="disabled">
+                                <option value="default-cate">请选择课程名称：</option>
+                                {% for cate in cates %}
+                                    <option>{{ cate.title }}</option>
+                                {% endfor %}
+
+                            </select>
+                        </td>
+                    </tr>
+
+                </table>
+            <!--按钮组-->
+                <div class="btn-toolbar" role="toolbar" aria-label="...">
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="submit" class="btn btn-default my-btn"><span class="glyphicon glyphicon-floppy-disk"></span>
+                            保存
+                        </button></a>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+            <!--分页显示-->
+        </div>
+
+    </div>
+
+</div>
+<div class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="thumbnail">
+                  <div class="caption">
+                    <h4><span class="glyphicon glyphicon-heart-empty glyphicon"></span> 关注我们</h4>
+                    <p>最受欢迎的管理平台</p>
+                    <p><a href="#" class="ic_df"> 新浪微博</a> </p>
+                    <p><a href="#" class="ic_weichat"> 官方微信</a> </p>
+                  </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="thumbnail">
+                  <div class="caption">
+                    <h4><span class="glyphicon glyphicon-king"> 开发平台</span> </h4>
+                    <p>加入开发平台，尊享会员福利，成为资深程序猿</p>
+                    <p class="p_idea"><a href="http://www.baizhibest.com"  class="btn btn-default btn-lg idea">我要开发</a></p>
+                  </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="thumbnail">
+                  <div class="caption">
+                    <h4><span class="glyphicon glyphicon-phone-alt"></span> 关于我们</h4>
+                    <p>欢迎反馈宝贵意见</p>
+                    <p class="p_idea"><a href="http://www.baizhibest.com"  class="btn btn-default btn-lg idea">意见反馈</a></p>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 cp_info">
+                <div class="no-mp">
+                    <p>CopyRight © 2020 北京百知教育科技有限公司 All Rights Reserved</p>
+                    <p>电话：010-****888    京ICP备*******8号</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
